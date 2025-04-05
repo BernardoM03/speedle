@@ -1,10 +1,18 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {DndContext} from '@dnd-kit/core';
+
+import {Droppable} from './Droppable';
+import {Draggable} from './Draggable';
+
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const containers = ['A', 'B', 'C'];
+  const [parent, setParent] = useState(null);
+  const draggableMarkup = (
+    <Draggable id="draggable">Drag me</Draggable>
+  );
 
   return (
     <>
@@ -21,12 +29,26 @@ function App() {
       </div>
       <div className="page-content">
         <div className='card selector-window'>
+          <DndContext onDragEnd={handleDragEnd}>
+            {parent === null ? draggableMarkup : null}
+
+            {containers.map((id) => (
+              <Droppable key={id} id={id}>
+                {parent === id ? draggableMarkup : 'Drop here'}
+              </Droppable>
+            ))}
+          </DndContext>
         </div>
         <button>start</button>
         <div className='card leaderboard-window'></div>
       </div>
     </>
   )
+
+  function handleDragEnd(event) {
+    const {over} = event;
+    setParent(over ? over.id : null);
+  }
 }
 
 export default App
