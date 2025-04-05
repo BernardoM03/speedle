@@ -1,18 +1,52 @@
-import { useState } from 'react'
-import {DndContext} from '@dnd-kit/core';
+import React, {useState} from 'react';
+import {
+  DndContext, 
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 
-import {Droppable} from './Droppable';
-import {Draggable} from './Draggable';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
+import {SortableItem} from './SortableItem';
 import './App.css'
 
 function App() {
 
-  const containers = ['A', 'B', 'C'];
-  const [parent, setParent] = useState(null);
-  const draggableMarkup = (
-    <Draggable id="draggable">Drag me</Draggable>
+  const [items, setItems] = useState([
+    "Wordle",
+    "NYT Mini",
+    "Strands",
+    "Connections",
+    "Movie to Movie",
+    "Wiki Game",
+    "Food Guessr",
+    "CATfishing",
+    "Timeguessr",
+    "Your choice"
+  ]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor)
   );
+
+  function handleDragEnd(event) {
+    const {active, over} = event;
+    
+    if (active.id !== over.id) {
+      setItems((items) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+        
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
 
   return (
     <>
@@ -29,26 +63,20 @@ function App() {
       </div>
       <div className="page-content">
         <div className='card selector-window'>
-          <DndContext onDragEnd={handleDragEnd}>
-            {parent === null ? draggableMarkup : null}
-
-            {containers.map((id) => (
-              <Droppable key={id} id={id}>
-                {parent === id ? draggableMarkup : 'Drop here'}
-              </Droppable>
-            ))}
+          <div className='selector-header'>Select and order your daily games!</div>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={items} strategy={verticalListSortingStrategy}>
+              {items.map(id => <SortableItem key={id} id={id} />)}
+            </SortableContext>
           </DndContext>
         </div>
         <button>start</button>
-        <div className='card leaderboard-window'></div>
+        <div className='card leaderboard-window'>
+          <div>Leaderboard</div>
+        </div>
       </div>
     </>
   )
-
-  function handleDragEnd(event) {
-    const {over} = event;
-    setParent(over ? over.id : null);
-  }
 }
 
 export default App
