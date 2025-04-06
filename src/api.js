@@ -1,7 +1,7 @@
 import axios from "axios";
 
 //const URL = "http://localhost:5000";
-const URL = "https://speedle.onrender.com/";
+const URL = "https://speedle.onrender.com";
 
 export async function getSites() {
     console.log("get sites")
