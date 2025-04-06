@@ -57,6 +57,80 @@ body {
   font-weight: 400;
 }
 
+.FAQ-button, .support-button {
+  font-size: 1.4em;
+  font-weight: 500;
+}
+
+.FAQ-button:hover, .support-button:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #21252d;
+  opacity: 90%;
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 50vw;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #21252d;
+  border-radius: 5px;
+}
+
+.close-button:hover {
+  color: #646cff
+}
+
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.github-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 .page-content {
   display: flex;
   justify-content: space-between;
@@ -86,6 +160,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
+  border: 2px solid #fff;
   border-radius: 8px;
   margin-bottom: 8px;
   background-color: #fff;
@@ -95,7 +170,9 @@ body {
 
 .sortable-item:hover {
   cursor: pointer;
-  background-color: rgb(212, 212, 212)
+  background-color: #1a1a1a;
+  color: white;
+  border-color: #646cff;
 }
 
 .disabled {
@@ -119,7 +196,6 @@ body {
 
 .site-desc {
   font-weight: 400;
-  color: black;
   text-align: left;
 }
 
@@ -146,12 +222,106 @@ body {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.timer-container {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 16px 32px;
+  border-radius: 12px;
+  color: white;
+}
+
+.timer-button {
+  border-radius: 8px;
+  padding: 0.5em 1.2em;
+  font-size: 1.4em;
+  font-weight: 500;
+  background-color: #1a1a1a;
+  border: 2px solid transparent;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.timer-button:hover {
+  border-color: #646cff;
+}
+
+.timer-text {
+  border-radius: 8px;
+  padding: 0.5em 1.2em;
+  background-color: #1a1a1a;
+  font-size: 1.4em;
+  font-weight: 500;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+}
+
+.leaderboard-window {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+.leaderboard-window table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 10px;
+  font-size: 1rem;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(100, 108, 255, 0.3);
+  border: 1px solid #646cff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaderboard-window thead {
+  background-color: #646cff;
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.leaderboard-window th,
+.leaderboard-window td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #2c2c2c;
+}
+
+.leaderboard-window tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+.leaderboard-window tr:hover {
+  background-color: #333;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.leaderboard-window td:first-child {
+  font-weight: bold;
+  color: #ffd700; /* gold-ish for rank */
+}
+
+.leaderboard-window td:nth-child(3) {
+  font-family: monospace;
+}
+
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
-  a:hover {
+  a:hover  {
     color: #747bff;
   }
   button {

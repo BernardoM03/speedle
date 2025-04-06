@@ -3,11 +3,22 @@ import axios from "axios"
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
+import Modal from "./Modal"
 import {SortableItem} from './SortableItem';
+import githubIcon from './assets/github-mark-white.svg';
 import './App.css'
 
 function App() {
+  const [faqIsOpen, setFaqIsOpen] = useState(false);
+  const [supportIsOpen, setSupportIsOpen] = useState(false);
   const [items, setItems] = useState([]);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const intervalRef = React.useRef(null);
+  const startTimeRef = React.useRef(null);
+
+// API call to fetch site data from MongoDB
   useEffect(() => {
     async function grabSiteData() {
       try {
@@ -23,6 +34,31 @@ function App() {
     grabSiteData()
   }, [])
 
+  useEffect(() => {
+    async function grabLeaderboardData() {
+      try {
+        const res = await axios.get("http://localhost:5000/leaderboard")
+        if (res.status === 200) {
+          setLeaderboard(res.data);
+        } 
+      } catch (err) {
+        console.error("Failed to fetch:", err);
+      }
+    }
+
+    grabLeaderboardData()
+  }, [])
+
+// cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+// dnd-kit functions to handle mouse sensor and dragging events for the sortable items
   const sensors = useSensors(
     useSensor(PointerSensor)
   );
@@ -39,6 +75,8 @@ function App() {
     }
   }
 
+// function to enable/disable each element in the list of Sortable items
+// disabled items will not open as a link in the challenge
   function enableDisable(id) {
     setItems(prevItems =>
       prevItems.map(item =>
@@ -47,6 +85,9 @@ function App() {
     );
   }
 
+  // function to start the challenge through the following steps
+  // 1. Open all the links
+  // 2. Start the timer for the challenge
   function startChallenge() {
     items.slice().reverse().forEach((item) => {
       if (item.enabled === true) {
@@ -54,6 +95,38 @@ function App() {
         window.open(item.url, '_blank');
       }
     });
+
+    if (intervalRef.current) return;
+
+    setElapsedTime(0);
+    setTimerRunning(true);
+    startTimeRef.current = Date.now();
+
+    intervalRef.current = setInterval(() => {
+      const now = Date.now();
+      const newElapsed = now - startTimeRef.current;
+      setElapsedTime(newElapsed);
+      document.title = formatTime(newElapsed) + " – speedrundle";
+    }, 50);
+  }
+
+  // function to stop the challenge
+  function stopStopwatch() {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      setTimerRunning(false);
+    }
+  }
+
+  // function to format the time in terms of minutes:seconds:milliseconds
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const milliseconds = Math.floor((ms % 1000) / 10); // two-digit ms
+  
+    return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
   }
 
   return (
@@ -65,10 +138,39 @@ function App() {
           <h2 className='site-subheader'>the daily-game speedrun challenge</h2>
         </div>
         <div className='modal-nav'>
-          <a className='FAQ-button'>FAQ</a>
-          <a className='support-button'>Support Me</a>
+          <a className='FAQ-button' onClick={() => setFaqIsOpen(true)}>Help</a>
+          <a className='support-button' onClick={() => setSupportIsOpen(true)}>More</a>
         </div>
       </div>
+      <Modal open={faqIsOpen} onClose={() => setFaqIsOpen(false)}>
+        <h2>Welcome to speedrundle</h2>
+        <h4>the daily-game speedrun challenge</h4>
+        <p className='modal-text'>This site acts as a hub for a daily-game speedrun devised by Stanz, and commonly played by my friends and I for weeks on end. Here are the rules....</p>
+        <p className='modal-text'>You will select a variety of daily games from our collection of sites. You will be able to order them in the way that you want, and they will open in that order when you begin. A vanilla run will be provided to you, which is the the original run devised by Stanz.</p>
+        <p className='modal-text'>The leaderboard contains the scores for all vanilla runs. The leaderboard will contain your own local scores and the public scores. Public scores will need to be submitted and checked before displayed.</p>
+        <p className='modal-text'>Once you have curated your speedrun, you may start by pressing the Start button in the center of your screen. This will open every link onto your browser and start the timer for the speedrun. Remember to enable pop-ups!</p>
+        <p className='modal-text'>Once you have finished all runs, you may submit your run and finalize your time. Your time will be stored in local storage, and ranked upon your local leaderboard. </p>
+    </Modal>
+    <Modal open={supportIsOpen} onClose={() => setSupportIsOpen(false)}>
+      <h2>Like speedrundle?</h2>
+      <p className='modal-text'>Here is the original concept for it!</p>
+      <div className="video-wrapper">
+        <iframe
+          width="100%"
+          height="315"
+          src="https://www.youtube.com/embed/LCPsFvPDJTQ"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      </div>
+      <p className='modal-text'>
+        And here's the GitHub Repository:
+        <a href='https://github.com/BernardoM03/speedle' target='_blank' rel='noopener noreferrer'>
+          <img src={githubIcon} alt='GitHub' className='github-icon' />
+        </a>
+      </p>
+    </Modal>
       <div className="page-content">
         <div className='card selector-window'>
           <div className='selector-header'>Select and order your daily games!</div>
@@ -80,9 +182,35 @@ function App() {
             )}
           </DndContext>
         </div>
-        <button className='start-button' onClick={startChallenge}>start</button>
+        <div className='game-board'>
+          <button className='start-button' onClick={startChallenge} disabled={timerRunning}>start</button>
+          <div className="timer-container">
+                <button className="timer-button" id="stop" onClick={stopStopwatch}>stop</button>
+                <p className="timer-text">{formatTime(elapsedTime)}</p>
+            </div>
+        </div>
         <div className='card leaderboard-window'>
           <div>Leaderboard</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>rank</th>
+                  <th>username</th>
+                  <th>time</th>
+                  <th>date recorded</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboard.slice(0, 100).map((entry, index) => (
+                  <tr key={entry._id}>
+                    <td>{index + 1}</td>
+                    <td>{entry.username}</td>
+                    <td>{formatTime(entry.time)}</td>
+                    <td>{new Date(entry.date).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
         </div>
       </div>
     </>

@@ -18,25 +18,13 @@ export function SortableItem({ id, title, description, enabled, onClick }) {
     opacity: isDragging ? 0.5 : 1
   };
 
-  if (enabled === true) {
-    return (
-      <div className="sortable-item" ref={setNodeRef} style={style}  onClick={() => onClick(id)}>
-        <div className='sortable-item-info'>
-          <div className='site-name'>{title}</div>
-          <div className='site-desc'>{description}</div>
-        </div>
-        <div className='sortable-item-button' {...attributes} {...listeners}>≡</div>
+  return (
+    <div className={`sortable-item ${!enabled ? 'disabled' : ''}`} ref={setNodeRef} style={style}  onClick={() => onClick(id)}>
+      <div className='sortable-item-info'>
+        <div className='site-name'>{title}</div>
+        <div className='site-desc'>{description}</div>
       </div>
-    );
-  } else {
-    return (
-      <div className="sortable-item disabled" ref={setNodeRef} style={style}  onClick={() => onClick(id)}>
-        <div className='sortable-item-info'>
-          <div className='site-name'>{title}</div>
-          <div className='site-desc'>{description}</div>
-        </div>
-        <div className='sortable-item-button' {...attributes} {...listeners}>≡</div>
-      </div>
-    );
-  }
+      <div className='sortable-item-button' {...attributes} {...listeners}>≡</div>
+    </div>
+  );
 }
