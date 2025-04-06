@@ -7,7 +7,6 @@ import Modal from "./Modal"
 import {SortableItem} from './SortableItem';
 import Leaderboard from './Leaderboard';
 import Records from './Records';
-import githubIcon from './assets/github-mark-white.svg';
 import './App.css'
 
 
@@ -160,7 +159,7 @@ function App() {
   return (
     <>
       <div className='site-banner'>
-        <div className="left-spacer" />
+        <div className="left-spacer"/>
         <div className='site-titles'>
           <h1 className="site-header">speedrundle</h1>
           <h2 className='site-subheader'>the daily-game speedrun challenge</h2>
