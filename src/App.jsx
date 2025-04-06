@@ -26,7 +26,7 @@ function App() {
   useEffect(() => {
     async function grabSiteData() {
       try {
-        const res = await axios.get("http://localhost:5000/sites")
+        const res = await axios.get("https://speedle.onrender.com/sites")
         if (res.status === 200) {
           setItems(res.data);
         } 
@@ -42,7 +42,7 @@ function App() {
   useEffect(() => {
     async function grabLeaderboardData() {
       try {
-        const res = await axios.get("http://localhost:5000/leaderboard")
+        const res = await axios.get("https://speedle.onrender.com/leaderboard")
         if (res.status === 200) {
           setLeaderboard(res.data);
         } 
