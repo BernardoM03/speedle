@@ -142,7 +142,7 @@ body {
   background-color: #1a1a1a;
   border: 10px solid #1a1a1a;
   height: 55vh;
-  min-width: 20vw;
+  min-width: 23vw;
   flex-shrink: 0;
   border-radius: 2%;
   padding: 10px 32px;
@@ -166,6 +166,7 @@ body {
   background-color: #fff;
   color: black;
   height: 50px;
+  transition: border-color 0.25s ease-in-out;
 }
 
 .sortable-item:hover {
@@ -216,6 +217,7 @@ body {
 
 .start-button:hover {
   border-color: #646cff;
+
 }
 .start-button:focus,
 .start-button:focus-visible {
@@ -268,6 +270,27 @@ body {
   padding: 20px;
 }
 
+.leaderboard-types {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2em;
+}
+
+.leaderboard-select {
+  padding: 2px 4px;
+  border: 1px solid transparent;
+  border-bottom: 1px solid white;
+  font-size: 1.2em;
+}
+
+.leaderboard-select:hover {
+  cursor: pointer;
+  border: 1px solid #646cff;
+  border-radius: 6px;
+  transition: border 0.5s ease-in-out;
+}
+
 .leaderboard-window table {
   border-collapse: collapse;
   width: 100%;
@@ -308,13 +331,49 @@ body {
 
 .leaderboard-window td:first-child {
   font-weight: bold;
-  color: #ffd700; /* gold-ish for rank */
+  color: #ffd700;
 }
 
 .leaderboard-window td:nth-child(3) {
   font-family: monospace;
 }
 
+.delete-record-button {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-record-button:hover {
+  background-color: #e03e3e;
+}
+
+.site-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #1e1e1e;
+  color: #ccc;
+  text-align: center;
+  font-size: 0.85rem;
+  padding: 0.75rem;
+  border-top: 1px solid #333;
+}
+
+.site-footer a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.site-footer a:hover {
+  color: #dddddd;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useActionState, useEffect, useState } from 'react';
 import axios from "axios"
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 import Modal from "./Modal"
 import {SortableItem} from './SortableItem';
+import Leaderboard from './Leaderboard';
+import Records from './Records';
 import githubIcon from './assets/github-mark-white.svg';
 import './App.css'
+
 
 function App() {
   const [faqIsOpen, setFaqIsOpen] = useState(false);
   const [supportIsOpen, setSupportIsOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [records, setRecords] = useState([]);
+  const [publicLeaderboard, setPublicLeaderboard] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const intervalRef = React.useRef(null);
@@ -34,6 +39,7 @@ function App() {
     grabSiteData()
   }, [])
 
+// API call to fetch leaderboard data from MongoDB
   useEffect(() => {
     async function grabLeaderboardData() {
       try {
@@ -47,6 +53,12 @@ function App() {
     }
 
     grabLeaderboardData()
+  }, [])
+
+// call to fetch personal record data from localstorage
+  useEffect(() => {
+    const records = JSON.parse(localStorage.getItem('records'));
+    if (records) setRecords(records);
   }, [])
 
 // cleanup on unmount
@@ -116,6 +128,16 @@ function App() {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
       setTimerRunning(false);
+
+      const newTime = {
+        time: elapsedTime,
+        date: new Date().toISOString(),
+        _id: crypto.randomUUID(), // Ensure uniqueness for rendering keys
+      };
+
+      const updatedRecords = [newTime, ...records];
+      setRecords(updatedRecords);
+      localStorage.setItem('records', JSON.stringify(updatedRecords));
     }
   }
 
@@ -127,6 +149,12 @@ function App() {
     const milliseconds = Math.floor((ms % 1000) / 10); // two-digit ms
   
     return `${minutes}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+  }
+
+  function handleDeleteRecord(id) {
+    const updatedRecords = records.filter(record => record._id !== id);
+    setRecords(updatedRecords);
+    localStorage.setItem('records', JSON.stringify(updatedRecords));
   }
 
   return (
@@ -164,12 +192,6 @@ function App() {
           allowFullScreen
         ></iframe>
       </div>
-      <p className='modal-text'>
-        And here's the GitHub Repository:
-        <a href='https://github.com/BernardoM03/speedle' target='_blank' rel='noopener noreferrer'>
-          <img src={githubIcon} alt='GitHub' className='github-icon' />
-        </a>
-      </p>
     </Modal>
       <div className="page-content">
         <div className='card selector-window'>
@@ -190,29 +212,29 @@ function App() {
             </div>
         </div>
         <div className='card leaderboard-window'>
-          <div>Leaderboard</div>
-            <table>
-              <thead>
-                <tr>
-                  <th>rank</th>
-                  <th>username</th>
-                  <th>time</th>
-                  <th>date recorded</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboard.slice(0, 100).map((entry, index) => (
-                  <tr key={entry._id}>
-                    <td>{index + 1}</td>
-                    <td>{entry.username}</td>
-                    <td>{formatTime(entry.time)}</td>
-                    <td>{new Date(entry.date).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className='leaderboard-types'>
+            <div className='leaderboard-select' onClick={() => setPublicLeaderboard(false)}>Personal Records</div>
+            <div className='leaderboard-select' onClick={() => setPublicLeaderboard(true)}>Public Leaderboard</div>
+          </div>
+          { publicLeaderboard ?
+          <Leaderboard
+            entries={leaderboard}
+            formatTime={formatTime}
+          /> :
+            <Records
+            entries={records}
+            formatTime={formatTime}
+            onDelete={handleDeleteRecord}
+          />
+          }
         </div>
       </div>
+      <footer className="site-footer">
+        <p>
+          Built by <a href="https://github.com/BernardoM03" target="_blank" rel="noopener noreferrer">BernardoM03</a> • Inspired by Stanz’s daily-game speedrun
+        </p>
+        <p>Make sure pop-ups are enabled for the best experience.</p>
+      </footer>
     </>
   )
 }
