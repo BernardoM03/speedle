@@ -1,5 +1,4 @@
 import React, { useActionState, useEffect, useState } from 'react';
-import axios from "axios"
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
@@ -7,6 +6,7 @@ import Modal from "./Modal"
 import {SortableItem} from './SortableItem';
 import Leaderboard from './Leaderboard';
 import Records from './Records';
+import { getSites, getLeaderboard, getUsers, getUser } from './api.js'
 import './App.css'
 
 
@@ -25,30 +25,17 @@ function App() {
 // API call to fetch site data from MongoDB
   useEffect(() => {
     async function grabSiteData() {
-      try {
-        const res = await axios.get("https://speedle.onrender.com/sites")
-        if (res.status === 200) {
-          setItems(res.data);
-        } 
-      } catch (err) {
-        console.error("Failed to fetch:", err);
-      }
+      let data = await getSites()
+      if (data) setItems(data)
     }
-
     grabSiteData()
   }, [])
 
 // API call to fetch leaderboard data from MongoDB
   useEffect(() => {
     async function grabLeaderboardData() {
-      try {
-        const res = await axios.get("https://speedle.onrender.com/leaderboard")
-        if (res.status === 200) {
-          setLeaderboard(res.data);
-        } 
-      } catch (err) {
-        console.error("Failed to fetch:", err);
-      }
+      let data = await getLeaderboard()
+      if (data) setLeaderboard(data)
     }
 
     grabLeaderboardData()
@@ -167,6 +154,7 @@ function App() {
         <div className='modal-nav'>
           <a className='FAQ-button' onClick={() => setFaqIsOpen(true)}>Help</a>
           <a className='support-button' onClick={() => setSupportIsOpen(true)}>More</a>
+          <a className='submit-button' href="https://docs.google.com/forms/d/e/1FAIpQLScf98nh-ODncorKmQ3kebRoxblhJoU93EFiRyNM1w9X2W3c9g/viewform?usp=sharing" target='_blank'>Submit Run</a>
         </div>
       </div>
       <Modal open={faqIsOpen} onClose={() => setFaqIsOpen(false)}>

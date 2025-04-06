@@ -56,12 +56,20 @@ body {
   font-weight: 400;
 }
 
+.submit-button {
+  color: white;
+  text-decoration: none;
+  font-size: 1.4em;
+  font-weight: 500;
+}
+
+
 .FAQ-button, .support-button {
   font-size: 1.4em;
   font-weight: 500;
 }
 
-.FAQ-button:hover, .support-button:hover {
+.FAQ-button:hover, .support-button:hover, .submit-button:hover {
   cursor: pointer;
   text-decoration: underline;
 }
@@ -276,6 +284,7 @@ body {
   gap: 2em;
 }
 
+/* leaderboard */
 .leaderboard-select {
   padding: 2px 4px;
   border: 1px solid transparent;
@@ -328,15 +337,35 @@ body {
   transition: background-color 0.2s ease-in-out;
 }
 
-.leaderboard-window td:first-child {
+/* Rank colors */
+.leaderboard-window tbody tr:nth-child(1) td:first-child {
+  color: gold;
   font-weight: bold;
-  color: #ffd700;
 }
 
+.leaderboard-window tbody tr:nth-child(2) td:first-child {
+  color: silver;
+  font-weight: bold;
+}
+
+.leaderboard-window tbody tr:nth-child(3) td:first-child {
+  color: #cd7f32; /* bronze */
+  font-weight: bold;
+}
+
+.leaderboard-window tbody tr:nth-child(n+4) td:first-child {
+  color: white;
+  font-weight: bold;
+}
+
+
+/* Monospace time column */
 .leaderboard-window td:nth-child(3) {
   font-family: monospace;
 }
 
+
+/* delete record button */
 .delete-record-button {
   background-color: #646cff;
   color: white;
@@ -352,6 +381,7 @@ body {
   background-color: #e03e3e;
 }
 
+/* footer */
 .site-footer {
   position: fixed;
   bottom: 0;

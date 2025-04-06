@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const sites = require("./siteRoutes")
 const leaderboard = require("./leaderboardRoutes")
+const user = require('./userRoutes')
 
 const app = express()
 const PORT = 5000
@@ -11,6 +12,7 @@ app.use(cors())
 app.use(express.json())
 app.use(sites)
 app.use(leaderboard)
+app.use(user)
 
 app.listen(PORT, () => {
     connect.connectToServer()
