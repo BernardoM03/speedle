@@ -6,6 +6,8 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #21252d;
+
+  box-sizing: border-box;
 }
 
 #root {
@@ -60,18 +62,68 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 80vw;
-  border: 1px solid white;
 }
 
 .card {
   background-color: #1a1a1a;
-  height: 550px;
-  width: 350px;
+  border: 10px solid #1a1a1a;
+  height: 55vh;
+  min-width: 20vw;
   flex-shrink: 0;
   border-radius: 2%;
+  padding: 10px 32px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-button {
+.selector-header {
+  margin-bottom: 20px;
+}
+
+.sortable-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  color: black;
+  height: 50px;
+}
+
+.sortable-item:hover {
+  cursor: pointer;
+  background-color: rgb(212, 212, 212)
+}
+
+.disabled {
+  background-color: #8b8b8b;
+  border: 2px solid #f9f9f9;
+}
+
+.disabled:hover {
+  background-color: rgb(104, 104, 104)
+}
+
+.sortable-item-button {
+  padding: 4px 4px;
+  cursor: grab;
+}
+
+.site-name {
+  font-weight: bold;
+  text-align: left;
+}
+
+.site-desc {
+  font-weight: 400;
+  color: black;
+  text-align: left;
+}
+
+.start-button {
   border-radius: 8px;
   height: 80px;
   width: 200px;
@@ -86,11 +138,11 @@ button {
   transition: border-color 0.25s;
 }
 
-button:hover {
+.start-button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+.start-button:focus,
+.start-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
